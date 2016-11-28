@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
 
@@ -65,7 +67,7 @@ public class BaseActivity extends AppCompatActivity {
 
         switch (lang) {
             case "English":
-                lang = "en";
+                lang = "en_US";
                 break;
             case "Arabic":
                 lang = "ar";
@@ -79,4 +81,33 @@ public class BaseActivity extends AppCompatActivity {
         String lang = prefs.getString("language", "English");
         return lang;
     }
+
+
+    public void replaceView(int layout, Fragment fragment, boolean isAddToBackStack, boolean... isAnim) {
+
+        try {
+            if (fragment != null) {
+
+                String fragmentName = fragment.getClass().getSimpleName();
+
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.setCustomAnimations(R.anim.slide_in_right,
+                        R.anim.slide_out_left, R.anim.slide_in_left,
+                        R.anim.slide_out_right);
+                fragmentTransaction.replace(layout, fragment, fragmentName);
+                //if (isAddToBackStack) {
+                String s = fragment.getClass().getSimpleName();
+                fragmentTransaction.addToBackStack(fragmentName);
+                // }
+                // else {
+                //     fragmentTransaction.addToBackStack(null);
+                // }
+                fragmentTransaction.commitAllowingStateLoss();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }
